@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coin Rush</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh}
+.hidden{display:none!important}
+
+/* WELCOME */
+#welcome{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at top,#1a0a3e,#0a0a1a)}
+.logo-em{font-size:80px;text-align:center}
+.logo-title{font-size:48px;font-weight:900;background:linear-gradient(180deg,#FFD700,#FF8C00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center}
+.logo-sub{font-size:12px;letter-spacing:5px;color:#FFD700;text-transform:uppercase;text-align:center;margin-bottom:28px}
+.box{background:rgba(255,215,0,.08);border:2px solid rgba(255,215,0,.3);border-radius:20px;padding:28px;max-width:460px;width:100%}
+.lbl{font-size:11px;letter-spacing:3px;color:#FFD700;text-transform:uppercase;margin-bottom:10px;text-align:center}
+#nameInput{width:100%;padding:13px;font-size:17px;font-family:inherit;font-weight:bold;background:rgba(255,255,255,.08);border:2px solid rgba(255,215,0,.5);border-radius:10px;color:#fff;text-align:center;margin-bottom:18px;outline:none}
+#nameInput:focus{border-color:#FFD700}
+.skin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.skin-btn{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 6px;cursor:pointer;font-size:28px;text-align:center;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.skin-btn span{font-size:9px;color:#888;font-family:Arial,sans-serif;font-weight:bold;letter-spacing:1px;text-transform:uppercase}
+.skin-btn:hover{border-color:#FFD700;transform:translateY(-2px)}
+.skin-btn.sel{border-color:#FFD700;background:rgba(255,215,0,.15);box-shadow:0 0 15px rgba(255,215,0,.3)}
+#startBtn{width:100%;padding:15px;font-size:18px;font-family:inherit;font-weight:900;text-transform:uppercase;letter-spacing:3px;background:linear-gradient(135deg,#FFD700,#FF8C00);border:none;border-radius:10px;color:#000;cursor:pointer;transition:all .2s}
+#startBtn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,215,0,.4)}
+.rules{margin-top:14px;background:rgba(0,0,0,.3);border-radius:8px;padding:11px;font-size:11px;color:#888;line-height:1.9;text-align:center}
+.rules b{color:#FFD700}
+
+/* GAME */
+#game{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px;background:radial-gradient(ellipse at top,#0d1a0d,#0a0a1a);gap:16px}
+.game-top{width:100%;max-width:560px;display:flex;align-items:center;justify-content:space-between}
+.g-title{font-size:20px;font-weight:900;color:#FFD700}
+.coin-display{background:rgba(255,215,0,.15);border:2px solid rgba(255,215,0,.4);border-radius:14px;padding:6px 18px;text-align:center}
+.coin-num{font-size:22px;font-weight:900;color:#FFD700;line-height:1}
+.coin-lbl{font-size:9px;color:#999;text-transform:uppercase;letter-spacing:1px}
+
+/* Wins tracker */
+.wins-row{display:flex;gap:10px;width:100%;max-width:560px;justify-content:center}
+.wins-card{background:#111128;border:2px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 10px;flex:1;text-align:center;max-width:160px;transition:all .3s}
+.wins-card.active{border-color:#FFD700;box-shadow:0 0 20px rgba(255,215,0,.25)}
+.wc-skin{font-size:26px;margin-bottom:4px}
+.wc-name{font-size:11px;font-weight:bold;color:#ccc;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wc-wins{display:flex;gap:5px;justify-content:center}
+.win-dot{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,215,0,.3);display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .3s}
+.win-dot.filled{background:#FFD700;border-color:#FFD700;color:#000}
+
+/* Arena */
+.arena{background:#111128;border:2px solid rgba(255,215,0,.2);border-radius:18px;padding:22px;width:100%;max-width:560px;text-align:center}
+.round-badge{font-size:11px;letter-spacing:3px;color:#FFD700;text-transform:uppercase;margin-bottom:14px}
+.fighters{display:flex;gap:10px;justify-content:center;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.fighter{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:90px}
+.f-skin{font-size:38px;transition:transform .3s}
+.f-name{font-size:11px;color:#aaa;font-weight:bold}
+.f-roll{font-size:32px;min-height:40px;display:flex;align-items:center;justify-content:center}
+.f-roll.winner{filter:drop-shadow(0 0 8px #FFD700)}
+.vs{font-size:20px;font-weight:900;color:#444;margin:0 4px}
+.result-msg{font-size:20px;font-weight:900;min-height:30px;margin-bottom:12px}
+.result-msg.win{color:#00ee88}
+.result-msg.lose{color:#ff4444}
+.result-msg.tie{color:#FFD700}
+.coins-change{font-size:14px;font-weight:bold;min-height:20px;margin-bottom:16px}
+.coins-change.pos{color:#00ee88}
+.coins-change.neg{color:#ff4444}
+#rollBtn{padding:14px 44px;font-size:16px;font-family:inherit;font-weight:900;text-transform:uppercase;letter-spacing:2px;background:linear-gradient(135deg,#FFD700,#FF8C00);border:none;border-radius:10px;color:#000;cursor:pointer;transition:all .2s}
+#rollBtn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,215,0,.4)}
+#rollBtn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* Log */
+.log{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px 14px;width:100%;max-width:560px;max-height:100px;overflow-y:auto;font-size:11px;color:#666}
+.log-line{padding:2px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.log-line:last-child{border:none;color:#ccc}
+
+/* WIN / LOSE screen */
+#end{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;background:radial-gradient(ellipse at center,#1a1a00,#0a0a1a)}
+.end-em{font-size:100px;margin-bottom:16px}
+.end-title{font-size:50px;font-weight:900;margin-bottom:10px}
+.end-title.win{background:linear-gradient(135deg,#FFD700,#FF8C00,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.end-title.lose{color:#ff4444}
+.end-sub{font-size:16px;color:#aaa;margin-bottom:28px}
+.final-coins{font-size:42px;font-weight:900;color:#FFD700;margin-bottom:6px}
+.final-lbl{font-size:12px;color:#666;letter-spacing:2px;text-transform:uppercase;margin-bottom:28px}
+.end-btn{background:linear-gradient(135deg,#FFD700,#FF8C00);border:none;border-radius:10px;color:#000;padding:15px 40px;font-size:16px;font-family:inherit;font-weight:900;cursor:pointer;text-transform:uppercase;letter-spacing:2px}
+</style>
+</head>
+<body>
+
+<!-- WELCOME -->
+<div id="welcome">
+  <div class="logo-em">🪙</div>
+  <div class="logo-title">COIN RUSH</div>
+  <div class="logo-sub">Roll to Win</div>
+  <div class="box">
+    <div class="lbl">Your Name</div>
+    <input type="text" id="nameInput" placeholder="Enter your name..." maxlength="16" />
+    <div class="lbl">Choose Your Skin</div>
+    <div class="skin-grid" id="skinGrid"></div>
+    <button id="startBtn" onclick="startGame()">🎲 START GAME</button>
+    <div class="rules">
+      <b>HOW TO PLAY</b><br>
+      Roll the dice against 2 CPUs each round<br>
+      Highest roll <b>wins the round</b> • First to <b>3 round wins</b> wins the match<br>
+      Win a match = <b>+50 coins</b> &nbsp;|&nbsp; Lose = <b>-50 coins</b><br>
+      You start with <b>100 coins</b>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="hidden">
+  <div class="game-top">
+    <div class="g-title">🪙 COIN RUSH</div>
+    <div class="coin-display">
+      <div class="coin-num" id="coinDisplay">100</div>
+      <div class="coin-lbl">coins</div>
+    </div>
+  </div>
+
+  <div class="wins-row" id="winsRow"></div>
+
+  <div class="arena">
+    <div class="round-badge" id="roundBadge">ROUND 1</div>
+    <div class="fighters" id="fighters"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="coins-change" id="coinsChange"></div>
+    <button id="rollBtn" onclick="doRoll()">🎲 ROLL DICE</button>
+  </div>
+
+  <div class="log" id="log"></div>
+</div>
+
+<!-- END -->
+<div id="end" class="hidden">
+  <div class="end-em" id="endEm">🏆</div>
+  <div class="end-title" id="endTitle">YOU WIN!</div>
+  <div class="end-sub" id="endSub"></div>
+  <div class="final-coins" id="finalCoins">150</div>
+  <div class="final-lbl">final coins</div>
+  <button class="end-btn" onclick="location.reload()">🔄 PLAY AGAIN</button>
+</div>
+
+<script>
+var SKINS = [
+  {e:'🧑',n:'Default'},{e:'👑',n:'King'},{e:'🤖',n:'Robot'},{e:'👾',n:'Alien'},
+  {e:'🦊',n:'Fox'},   {e:'🐉',n:'Dragon'},{e:'🦸',n:'Hero'},{e:'🧙',n:'Wizard'}
+];
+var DICE = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+
+var G = {
+  players: [],   // [{name, skin, coins, wins, isHuman}]
+  round: 1,
+  matchWins: 0,
+  matchLosses: 0,
+  busy: false
+};
+
+function buildSkinGrid() {
+  var g = document.getElementById('skinGrid');
+  g.innerHTML = '';
+  SKINS.forEach(function(s,i){
+    var b = document.createElement('button');
+    b.className = 'skin-btn'+(i===0?' sel':'');
+    b.id = 'sk_'+i;
+    b.innerHTML = s.e+'<span>'+s.n+'</span>';
+    b.onclick = function(){
+      document.querySelectorAll('.skin-btn').forEach(function(x){x.classList.remove('sel');});
+      b.classList.add('sel');
+    };
+    g.appendChild(b);
+  });
+}
+
+function getSelectedSkin() {
+  for(var i=0;i<SKINS.length;i++){
+    if(document.getElementById('sk_'+i).classList.contains('sel')) return SKINS[i];
+  }
+  return SKINS[0];
+}
+
+function startGame() {
+  var name = document.getElementById('nameInput').value.trim() || 'Player';
+  var skin = getSelectedSkin();
+  G.players = [
+    {name: name,      skin: skin.e, coins: 100, wins: 0, isHuman: true},
+    {name: 'CPU Rex', skin: '🤖',   coins: 100, wins: 0, isHuman: false},
+    {name: 'CPU Max', skin: '🦊',   coins: 100, wins: 0, isHuman: false}
+  ];
+  G.round = 1;
+  G.matchWins = 0;
+  G.matchLosses = 0;
+  G.busy = false;
+  show('game');
+  renderWinsRow();
+  renderFighters();
+  document.getElementById('roundBadge').textContent = 'ROUND 1';
+  document.getElementById('resultMsg').textContent = '';
+  document.getElementById('coinsChange').textContent = '';
+  document.getElementById('rollBtn').disabled = false;
+  document.getElementById('log').innerHTML = '';
+  addLog('Match started! Roll the dice — highest roll wins the round.');
+}
+
+function renderWinsRow() {
+  var row = document.getElementById('winsRow');
+  row.innerHTML = '';
+  G.players.forEach(function(p,i){
+    var card = document.createElement('div');
+    card.className = 'wins-card'+(i===0?' active':'');
+    card.id = 'wcard_'+i;
+    var dots = '';
+    for(var d=0;d<3;d++){
+      dots += '<div class="win-dot'+(d<p.wins?' filled':'')+'">'+( d<p.wins?'★':'' )+'</div>';
+    }
+    card.innerHTML = '<div class="wc-skin">'+p.skin+'</div><div class="wc-name">'+p.name+'</div><div class="wc-wins">'+dots+'</div>';
+    row.appendChild(card);
+  });
+  document.getElementById('coinDisplay').textContent = G.players[0].coins;
+}
+
+function renderFighters() {
+  var f = document.getElementById('fighters');
+  f.innerHTML = '';
+  G.players.forEach(function(p,i){
+    if(i>0){ var vs=document.createElement('div'); vs.className='vs'; vs.textContent='VS'; f.appendChild(vs); }
+    var div = document.createElement('div');
+    div.className = 'fighter';
+    div.id = 'fighter_'+i;
+    div.innerHTML = '<div class="f-skin">'+p.skin+'</div><div class="f-name">'+p.name+'</div><div class="f-roll" id="roll_'+i+'">🎲</div>';
+    f.appendChild(div);
+  });
+}
+
+function doRoll() {
+  if(G.busy) return;
+  G.busy = true;
+  document.getElementById('rollBtn').disabled = true;
+  document.getElementById('resultMsg').textContent = '';
+  document.getElementById('coinsChange').textContent = '';
+
+  // Animate dice for all players
+  var rolls = 0;
+  var finalVals = G.players.map(function(){ return Math.floor(Math.random()*6)+1; });
+  var timer = setInterval(function(){
+    G.players.forEach(function(p,i){
+      document.getElementById('roll_'+i).textContent = DICE[Math.floor(Math.random()*6)];
+    });
+    rolls++;
+    if(rolls >= 10){
+      clearInterval(timer);
+      G.players.forEach(function(p,i){
+        document.getElementById('roll_'+i).textContent = DICE[finalVals[i]-1];
+      });
+      setTimeout(function(){ resolveRound(finalVals); }, 400);
+    }
+  }, 80);
+}
+
+function resolveRound(vals) {
+  var maxVal = Math.max.apply(null, vals);
+  var winners = [];
+  vals.forEach(function(v,i){ if(v===maxVal) winners.push(i); });
+  var humanWon = winners.indexOf(0) !== -1;
+  var tie = winners.length > 1;
+
+  // Highlight winner
+  winners.forEach(function(i){
+    document.getElementById('roll_'+i).classList.add('winner');
+  });
+
+  // Log
+  var logParts = G.players.map(function(p,i){ return p.name+' rolled '+vals[i]; });
+  addLog('Round '+G.round+': '+logParts.join(' | '));
+
+  var resultEl = document.getElementById('resultMsg');
+  var changeEl = document.getElementById('coinsChange');
+
+  if(tie){
+    resultEl.textContent = '🤝 TIE — No coins change!';
+    resultEl.className = 'result-msg tie';
+    changeEl.textContent = '';
+    addLog('It\'s a tie! No coins awarded.');
+  } else if(humanWon){
+    G.players[0].wins++;
+    resultEl.textContent = '🏆 YOU WIN THIS ROUND!';
+    resultEl.className = 'result-msg win';
+    changeEl.textContent = '';
+    addLog('You win round '+G.round+'! ⭐ '+G.players[0].wins+'/3 wins');
+  } else {
+    var cpuWinner = G.players[winners[0]];
+    cpuWinner.wins++;
+    resultEl.textContent = '❌ '+cpuWinner.name.toUpperCase()+' WINS THIS ROUND!';
+    resultEl.className = 'result-msg lose';
+    changeEl.textContent = '';
+    addLog(cpuWinner.name+' wins round '+G.round+'! ⭐ '+cpuWinner.wins+'/3 wins');
+  }
+
+  renderWinsRow();
+
+  // Check if anyone reached 3 wins
+  var matchWinner = null;
+  G.players.forEach(function(p){ if(p.wins >= 3 && !matchWinner) matchWinner = p; });
+
+  setTimeout(function(){
+    if(matchWinner){
+      endMatch(matchWinner);
+    } else {
+      G.round++;
+      document.getElementById('roundBadge').textContent = 'ROUND '+G.round;
+      // Clear roll displays
+      G.players.forEach(function(p,i){
+        var r = document.getElementById('roll_'+i);
+        r.textContent = '🎲';
+        r.classList.remove('winner');
+      });
+      resultEl.textContent = '';
+      changeEl.textContent = '';
+      G.busy = false;
+      document.getElementById('rollBtn').disabled = false;
+    }
+  }, 1800);
+}
+
+function endMatch(winner) {
+  var human = G.players[0];
+  var humanWon = winner.isHuman;
+
+  if(humanWon){
+    human.coins += 50;
+    G.matchWins++;
+    addLog('🏆 YOU WIN THE MATCH! +50 coins! Total: '+human.coins);
+    document.getElementById('resultMsg').textContent = '🏆 MATCH WIN! +50 coins!';
+    document.getElementById('resultMsg').className = 'result-msg win';
+    document.getElementById('coinsChange').textContent = '+50 coins added!';
+    document.getElementById('coinsChange').className = 'coins-change pos';
+  } else {
+    human.coins = Math.max(0, human.coins - 50);
+    G.matchLosses++;
+    addLog('😔 '+winner.name+' wins the match! -50 coins. Total: '+human.coins);
+    document.getElementById('resultMsg').textContent = '😔 MATCH LOST! -50 coins!';
+    document.getElementById('resultMsg').className = 'result-msg lose';
+    document.getElementById('coinsChange').textContent = '-50 coins lost!';
+    document.getElementById('coinsChange').className = 'coins-change neg';
+  }
+
+  document.getElementById('coinDisplay').textContent = human.coins;
+
+  // Check win/lose game condition
+  setTimeout(function(){
+    if(human.coins <= 0){
+      showEnd(false, 'You ran out of coins! Game over.');
+    } else if(humanWon && G.matchWins >= 3){
+      showEnd(true, 'You won 3 matches! You are the Coin Rush Champion!');
+    } else {
+      // Start next match
+      addLog('--- New match starting! ---');
+      G.players.forEach(function(p){ p.wins = 0; });
+      G.round = 1;
+      document.getElementById('roundBadge').textContent = 'ROUND 1';
+      G.players.forEach(function(p,i){
+        var r = document.getElementById('roll_'+i);
+        if(r){ r.textContent='🎲'; r.classList.remove('winner'); }
+      });
+      document.getElementById('resultMsg').textContent = '';
+      document.getElementById('coinsChange').textContent = '';
+      renderWinsRow();
+      G.busy = false;
+      document.getElementById('rollBtn').disabled = false;
+    }
+  }, 2200);
+}
+
+function showEnd(won, msg) {
+  var human = G.players[0];
+  document.getElementById('endEm').textContent = won ? '🏆' : '😔';
+  document.getElementById('endTitle').textContent = won ? 'YOU WIN!' : 'GAME OVER';
+  document.getElementById('endTitle').className = 'end-title '+(won?'win':'lose');
+  document.getElementById('endSub').textContent = msg;
+  document.getElementById('finalCoins').textContent = human.coins;
+  show('end');
+}
+
+function addLog(msg) {
+  var box = document.getElementById('log');
+  var d = document.createElement('div');
+  d.className = 'log-line';
+  d.textContent = msg;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+
+function show(id) {
+  ['welcome','game','end'].forEach(function(s){
+    document.getElementById(s).classList.toggle('hidden', s!==id);
+  });
+}
+
+window.addEventListener('DOMContentLoaded', function(){
+  buildSkinGrid();
+  document.getElementById('nameInput').addEventListener('keydown', function(e){
+    if(e.key==='Enter') startGame();
+  });
+});
+</script>
+</body>
+</html>
