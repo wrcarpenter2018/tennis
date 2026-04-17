@@ -464,10 +464,10 @@ function draw() {
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
   ctx.fillRect(W/2-3, H/2-6, 6, 12);
 
-  // Player racket (left side)
-  drawRacket(PLAYER_X, G.playerY, PW, PH, G.playerSkin.frame, G.playerSkin.grip, G.playerSkin.e);
-  // CPU racket (right side, mirrored)
-  drawRacket(CPU_X, G.cpuY, PW, PH, G.cpuSkin.frame, G.cpuSkin.grip, G.cpuSkin.e);
+  // Player figure (left side, facing right)
+  drawPlayer(PLAYER_X, G.playerY, PW, PH, G.playerSkin, true);
+  // CPU figure (right side, facing left)
+  drawPlayer(CPU_X, G.cpuY, PW, PH, G.cpuSkin, false);
 
   // Ball
   ctx.fillStyle = '#c8ff00';
@@ -479,41 +479,77 @@ function draw() {
   ctx.shadowBlur = 0;
 }
 
-function drawRacket(x, y, w, h, frameColor, gripColor, skinEmoji) {
+function drawPlayer(x, y, w, h, skin, facingRight) {
   var cx = x + w/2;
-  var headW = 36;
-  var headH = h * 0.65;
+  var headW = 32;
+  var headH = h * 0.60;
   var headY = y;
   var headCY = headY + headH/2;
-  var gripH = h * 0.35;
+  var gripH = h * 0.40;
   var gripY = headY + headH;
   var gripW = 7;
 
-  // Handle
-  ctx.fillStyle = gripColor;
+  // Body is behind the racket
+  var bx = facingRight ? cx - 22 : cx + 22;
+  var bodyTopY = y + headH * 0.1;
+  var bodyH = 30;
+  var bodyW = 14;
+  var shoulderY = bodyTopY + 5;
+  var bodyBottomY = bodyTopY + bodyH;
+  var headR = 11;
+  var headCY2 = bodyTopY - headR - 2;
+
+  // Legs
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(bx - 3, bodyBottomY); ctx.lineTo(bx - 7, bodyBottomY + 18); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(bx + 3, bodyBottomY); ctx.lineTo(bx + 7, bodyBottomY + 18); ctx.stroke();
+
+  // Body (shirt in frame color)
+  ctx.fillStyle = skin.frame;
   ctx.beginPath();
-  ctx.roundRect ? ctx.roundRect(cx - gripW/2, gripY, gripW, gripH, 3) : ctx.rect(cx - gripW/2, gripY, gripW, gripH);
+  if(ctx.roundRect) ctx.roundRect(bx - bodyW/2, bodyTopY, bodyW, bodyH, 4);
+  else ctx.rect(bx - bodyW/2, bodyTopY, bodyW, bodyH);
   ctx.fill();
 
-  // Racket frame using bezier curves (oval shape)
-  ctx.strokeStyle = frameColor;
+  // Arm from shoulder to racket grip
+  var armX = facingRight ? bx + bodyW/2 : bx - bodyW/2;
+  var gripCX = cx;
+  var gripCY = gripY + gripH * 0.35;
+  ctx.strokeStyle = '#c8a07a';
   ctx.lineWidth = 5;
-  ctx.shadowColor = frameColor;
-  ctx.shadowBlur = 12;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(armX, shoulderY + 8);
+  ctx.quadraticCurveTo(armX + (gripCX - armX)*0.5, shoulderY, gripCX, gripCY);
+  ctx.stroke();
+
+  // Racket grip/handle
+  ctx.fillStyle = skin.grip;
+  ctx.beginPath();
+  if(ctx.roundRect) ctx.roundRect(cx - gripW/2, gripY, gripW, gripH, 3);
+  else ctx.rect(cx - gripW/2, gripY, gripW, gripH);
+  ctx.fill();
+
+  // Racket frame
+  ctx.strokeStyle = skin.frame;
+  ctx.lineWidth = 5;
+  ctx.shadowColor = skin.frame;
+  ctx.shadowBlur = 10;
   ctx.beginPath();
   ctx.moveTo(cx, headY);
-  ctx.bezierCurveTo(cx + headW, headY,       cx + headW, headY + headH, cx, headY + headH);
-  ctx.bezierCurveTo(cx - headW, headY + headH, cx - headW, headY,       cx, headY);
+  ctx.bezierCurveTo(cx + headW, headY,        cx + headW, headY + headH, cx, headY + headH);
+  ctx.bezierCurveTo(cx - headW, headY + headH, cx - headW, headY,        cx, headY);
   ctx.closePath();
   ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // Strings inside oval — horizontal
+  // Strings — horizontal
   ctx.strokeStyle = 'rgba(255,255,255,0.4)';
   ctx.lineWidth = 1;
-  var rows = 6;
-  for(var i=1; i<rows; i++){
-    var sy = headY + (headH/rows)*i;
+  for(var i=1; i<6; i++){
+    var sy = headY + (headH/6)*i;
     var t = (sy - headCY) / (headH/2);
     var hw = headW * Math.sqrt(Math.max(0, 1 - t*t)) * 0.92;
     ctx.beginPath(); ctx.moveTo(cx-hw, sy); ctx.lineTo(cx+hw, sy); ctx.stroke();
@@ -523,11 +559,21 @@ function drawRacket(x, y, w, h, frameColor, gripColor, skinEmoji) {
   ctx.beginPath(); ctx.moveTo(cx-headW*0.5, headY+headH*0.15); ctx.lineTo(cx-headW*0.5, headY+headH*0.85); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(cx+headW*0.5, headY+headH*0.15); ctx.lineTo(cx+headW*0.5, headY+headH*0.85); ctx.stroke();
 
-  // Skin emoji above racket
-  ctx.font = '15px Arial';
+  // Head circle
+  ctx.fillStyle = '#f5cba7';
+  ctx.beginPath();
+  ctx.arc(bx, headCY2, headR, 0, Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle = skin.frame;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Flag emoji on head
+  ctx.font = '13px Arial';
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#fff';
-  ctx.fillText(skinEmoji, cx, headY - 5);
+  ctx.textBaseline = 'middle';
+  ctx.fillText(skin.e, bx, headCY2);
+  ctx.textBaseline = 'alphabetic';
 }
 
 function roundRect(x,y,w,h,r){
