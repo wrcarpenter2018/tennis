@@ -287,13 +287,13 @@ var SKINS = [
 // ===== UPGRADES =====
 var UPGRADE_DEFS = [
   {key:'speed', icon:'⚡', name:'Speed',  desc:'Faster paddle response', costs:[150,175,175],
-   labels:['Quick','Fast','Lightning'], values:[0.25,0.34,0.44,0.55]},
+   labels:['Quick','Fast','Lightning'], values:[0.22,0.38,0.54,0.72]},
   {key:'power', icon:'💪', name:'Power',  desc:'Hit the ball harder',    costs:[200,250,250],
-   labels:['Strong','Powerful','Explosive'], values:[13,16,19,23]},
+   labels:['Strong','Powerful','Explosive'], values:[13,17,21,26]},
   {key:'reach', icon:'📏', name:'Reach',  desc:'Larger paddle size',     costs:[100,100,100],
-   labels:['Long','Longer','Giant'], values:[80,94,108,124]},
+   labels:['Long','Longer','Giant'], values:[80,100,120,144]},
   {key:'spin',  icon:'🌀', name:'Spin',   desc:'More angle on your shots', costs:[250,275,275],
-   labels:['Spin','Topspin','Mega Spin'], values:[9,11,14,17]}
+   labels:['Spin','Topspin','Mega Spin'], values:[9,12,15,19]}
 ];
 var UPGRADES = {speed:0, power:0, reach:0, spin:0};
 
@@ -349,16 +349,21 @@ function renderUpgrades() {
 }
 
 function buyUpgrade(key) {
-  var def = UPGRADE_DEFS.find(function(d){ return d.key===key; });
+  var def = null;
+  for(var i = 0; i < UPGRADE_DEFS.length; i++) {
+    if(UPGRADE_DEFS[i].key === key) { def = UPGRADE_DEFS[i]; break; }
+  }
+  if(!def) return;
   var lvl = UPGRADES[key];
   if(lvl >= 3) return;
   var cost = def.costs[lvl];
   if(G.coins < cost) return;
-  G.coins -= cost;
-  UPGRADES[key]++;
+  G.coins = G.coins - cost;
+  UPGRADES[key] = lvl + 1;
   saveCoins();
   saveUpgrades();
   renderUpgrades();
+  document.getElementById('upgCoinDisplay').textContent = '🪙 ' + G.coins;
 }
 
 // ===== CANVAS =====
