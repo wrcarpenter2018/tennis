@@ -76,6 +76,40 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
 .end-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 .end-btn{background:linear-gradient(135deg,#4caf50,#2e7d32);border:none;border-radius:10px;color:#fff;padding:13px 32px;font-size:14px;font-family:inherit;font-weight:900;cursor:pointer;text-transform:uppercase;letter-spacing:2px}
 .end-btn.again{background:linear-gradient(135deg,#FFD700,#FF8C00);color:#000}
+.end-btn.vault{background:linear-gradient(135deg,#7b2ff7,#4a00b4)}
+
+/* VAULT */
+#vault{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;background:radial-gradient(ellipse at top,#1a0b30,#0a0a1a)}
+.vault-em{font-size:80px;margin-bottom:10px}
+.vault-title{font-size:34px;font-weight:900;background:linear-gradient(180deg,#FFD700,#FF8C00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px}
+.vault-coins-big{font-size:72px;font-weight:900;color:#FFD700;line-height:1}
+.vault-coins-lbl{font-size:12px;letter-spacing:3px;color:#666;text-transform:uppercase;margin-bottom:20px}
+.vault-bar-wrap{background:rgba(255,255,255,.08);border-radius:20px;height:10px;margin-bottom:6px;overflow:hidden;max-width:340px;width:100%;margin-left:auto;margin-right:auto}
+.vault-bar{height:100%;border-radius:20px;background:linear-gradient(90deg,#4caf50,#FFD700);transition:width .6s}
+.vault-bar-lbl{font-size:10px;color:#555;margin-bottom:22px}
+.trivia-unlock{background:rgba(76,175,80,.08);border:2px solid rgba(76,175,80,.3);border-radius:14px;padding:16px;margin-bottom:22px;max-width:340px;width:100%}
+.trivia-unlock.locked{border-color:rgba(255,100,0,.35);background:rgba(255,100,0,.06)}
+.trivia-unlock-title{font-size:14px;font-weight:900;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;color:#4caf50}
+.trivia-unlock.locked .trivia-unlock-title{color:#ff6600}
+.trivia-unlock-sub{font-size:12px;color:#777}
+
+/* TRIVIA */
+#trivia{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:radial-gradient(ellipse at top,#0a1a2a,#0a0a1a)}
+.trivia-inner{max-width:480px;width:100%}
+.trivia-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.trivia-prog{font-size:11px;letter-spacing:2px;color:#4caf50;text-transform:uppercase}
+.trivia-coin-disp{font-size:18px;font-weight:900;color:#FFD700}
+.trivia-q-box{font-size:17px;font-weight:700;color:#fff;line-height:1.5;margin-bottom:18px;padding:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;min-height:80px;display:flex;align-items:center;justify-content:center;text-align:center}
+.trivia-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.trivia-opt{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.12);border-radius:10px;padding:14px 10px;color:#fff;font-size:13px;font-family:inherit;font-weight:bold;cursor:pointer;transition:all .2s;text-align:center;line-height:1.3}
+.trivia-opt:hover:not(:disabled){border-color:#4caf50;background:rgba(76,175,80,.12)}
+.trivia-opt.correct{border-color:#4caf50!important;background:rgba(76,175,80,.25)!important;color:#4caf50}
+.trivia-opt.wrong{border-color:#ff4444!important;background:rgba(255,68,68,.15)!important;color:#ff4444}
+.trivia-feedback{text-align:center;font-size:15px;font-weight:900;min-height:26px;margin-bottom:12px;letter-spacing:1px}
+.trivia-feedback.good{color:#4caf50}
+.trivia-feedback.bad{color:#ff4444}
+.trivia-next-btn{width:100%;padding:14px;font-size:15px;font-family:inherit;font-weight:900;text-transform:uppercase;letter-spacing:2px;background:linear-gradient(135deg,#4caf50,#2e7d32);border:none;border-radius:10px;color:#fff;cursor:pointer;transition:all .2s}
+.trivia-next-btn:hover{transform:translateY(-2px)}
 </style>
 </head>
 <body>
@@ -91,6 +125,7 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
     <div class="lbl">Choose Your Skin</div>
     <div class="skin-grid" id="skinGrid"></div>
     <button id="startBtn" onclick="startGame()">🎾 PLAY TENNIS</button>
+    <button id="vaultBtn" onclick="openVault()" style="width:100%;margin-top:10px;padding:12px;font-size:14px;font-family:inherit;font-weight:900;text-transform:uppercase;letter-spacing:2px;background:linear-gradient(135deg,#7b2ff7,#4a00b4);border:none;border-radius:10px;color:#fff;cursor:pointer">🏦 MY VAULT</button>
     <div class="rules">
       <b>HOW TO PLAY</b><br>
       Move your mouse (or touch) to control your paddle<br>
@@ -157,6 +192,38 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
   <div class="end-btns">
     <button class="end-btn again" onclick="startMatch()">🎾 PLAY AGAIN</button>
     <button class="end-btn" onclick="show('welcome')">🏠 MENU</button>
+  </div>
+</div>
+
+<!-- VAULT -->
+<div id="vault" class="hidden">
+  <div class="vault-em">🏦</div>
+  <div class="vault-title">YOUR VAULT</div>
+  <div class="vault-coins-big" id="vaultCoins">100</div>
+  <div class="vault-coins-lbl">🪙 Coins</div>
+  <div class="vault-bar-wrap"><div class="vault-bar" id="vaultBar" style="width:10%"></div></div>
+  <div class="vault-bar-lbl" id="vaultBarLbl">100 / 1000 coins to champion</div>
+  <div class="trivia-unlock locked" id="triviaUnlock">
+    <div class="trivia-unlock-title" id="triviaUnlockTitle">🔒 Tennis Trivia</div>
+    <div class="trivia-unlock-sub" id="triviaUnlockSub">Reach 500 coins to unlock!</div>
+  </div>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <button class="end-btn" onclick="show('welcome')">🏠 MENU</button>
+    <button class="end-btn vault" id="triviaPlayBtn" onclick="startTrivia()" disabled style="opacity:.4">🧠 PLAY TRIVIA</button>
+  </div>
+</div>
+
+<!-- TRIVIA -->
+<div id="trivia" class="hidden">
+  <div class="trivia-inner">
+    <div class="trivia-hdr">
+      <div class="trivia-prog" id="triviaProgress">QUESTION 1 / 5</div>
+      <div class="trivia-coin-disp" id="triviaCoinDisp">🪙 100</div>
+    </div>
+    <div class="trivia-q-box" id="triviaQuestion">Loading...</div>
+    <div class="trivia-opts" id="triviaOpts"></div>
+    <div class="trivia-feedback" id="triviaFeedback"></div>
+    <button class="trivia-next-btn hidden" id="triviaNextBtn" onclick="nextTriviaQ()">NEXT →</button>
   </div>
 </div>
 
@@ -424,6 +491,7 @@ function endMatch(playerWon) {
     G.coins = Math.max(0, G.coins - 50);
     setMsg('😔 CPU WINS THE MATCH!');
   }
+  saveCoins();
   document.getElementById('coinDisplay').textContent = G.coins;
   setTimeout(function(){
     var grandWin = G.coins >= 1000;
@@ -449,7 +517,7 @@ function endMatch(playerWon) {
     var btns = document.querySelector('.end-btns');
     btns.innerHTML = grandWin || brokeOut
       ? '<button class="end-btn again" onclick="location.reload()">🔄 NEW GAME</button>'
-      : '<button class="end-btn again" onclick="startMatch()">🎾 NEXT MATCH</button><button class="end-btn" onclick="show(\'welcome\')">🏠 MENU</button>';
+      : '<button class="end-btn again" onclick="startMatch()">🎾 NEXT MATCH</button><button class="end-btn vault" onclick="openVault()">🏦 VAULT</button><button class="end-btn" onclick="show(\'welcome\')">🏠 MENU</button>';
     show('end');
   }, 2000);
 }
@@ -636,13 +704,133 @@ function setMsg(msg) {
 }
 
 function show(id) {
-  ['welcome','game','end'].forEach(function(s){
+  ['welcome','game','end','vault','trivia'].forEach(function(s){
     document.getElementById(s).classList.toggle('hidden', s!==id);
   });
 }
 
+// ===== LOCAL STORAGE =====
+function saveCoins() {
+  try { localStorage.setItem('lfo_coins', G.coins); } catch(e){}
+}
+function loadCoins() {
+  try { var v = parseInt(localStorage.getItem('lfo_coins')); return isNaN(v) ? 100 : v; } catch(e){ return 100; }
+}
+
+// ===== VAULT =====
+function openVault() {
+  var pct = Math.min(100, (G.coins / 1000) * 100);
+  document.getElementById('vaultCoins').textContent = G.coins;
+  document.getElementById('vaultBar').style.width = pct + '%';
+  document.getElementById('vaultBarLbl').textContent = G.coins + ' / 1000 coins to champion';
+  var unlocked = G.coins >= 500;
+  document.getElementById('triviaUnlock').className = 'trivia-unlock' + (unlocked ? '' : ' locked');
+  document.getElementById('triviaUnlockTitle').textContent = unlocked ? '🔓 Tennis Trivia — UNLOCKED!' : '🔒 Tennis Trivia';
+  document.getElementById('triviaUnlockSub').textContent = unlocked
+    ? 'Test your tennis knowledge and earn coins!'
+    : 'Reach 500 coins to unlock. (' + G.coins + ' / 500)';
+  var btn = document.getElementById('triviaPlayBtn');
+  btn.disabled = !unlocked;
+  btn.style.opacity = unlocked ? '1' : '0.4';
+  show('vault');
+}
+
+// ===== TRIVIA =====
+var TRIVIA_Q = [
+  {q:"How many Grand Slam titles did Roger Federer win?", opts:["20","17","19","22"], ans:0},
+  {q:"What surface is Wimbledon played on?", opts:["Grass","Clay","Hard court","Artificial turf"], ans:0},
+  {q:"What does 'love' mean in tennis scoring?", opts:["Zero points","One point","A serve","An ace"], ans:0},
+  {q:"Which Grand Slam is played on clay?", opts:["French Open","US Open","Australian Open","Wimbledon"], ans:0},
+  {q:"What is a 'bagel' in tennis slang?", opts:["Winning 6-0","An ace serve","A double fault","Tiebreak win"], ans:0},
+  {q:"Carlos Alcaraz represents which country?", opts:["Spain","Italy","France","Argentina"], ans:0},
+  {q:"Jannik Sinner is from which country?", opts:["Italy","Spain","Switzerland","Croatia"], ans:0},
+  {q:"What is the score when both players reach 40-40?", opts:["Deuce","Tie","Love-all","Fault"], ans:0},
+  {q:"Who has won the most men's Wimbledon singles titles?", opts:["Roger Federer","Novak Djokovic","Pete Sampras","Rafael Nadal"], ans:0},
+  {q:"How many sets can a men's Grand Slam match last?", opts:["5","3","4","7"], ans:0},
+  {q:"Ivan Lendl is from which country?", opts:["Czech Republic","Slovakia","Poland","Hungary"], ans:0},
+  {q:"How many Grand Slams did Andre Agassi win?", opts:["8","6","7","10"], ans:0},
+  {q:"What does 'ace' mean in tennis?", opts:["Unreturnable serve","Winning the match","A perfect shot","Double fault"], ans:0},
+  {q:"Andy Murray is from which country?", opts:["United Kingdom","Australia","Ireland","Canada"], ans:0},
+  {q:"What is a 'break' in tennis?", opts:["Winning opponent's service game","A rest between sets","Winning a tiebreak","Net cord winner"], ans:0},
+  {q:"Which player is nicknamed 'The Joker'?", opts:["Djokovic","Federer","Kyrgios","Murray"], ans:0},
+  {q:"What year did Wimbledon first begin?", opts:["1877","1900","1850","1920"], ans:0},
+  {q:"What is a 'golden set' in tennis?", opts:["Winning a set without losing a point","Winning 6-0","A tiebreak 7-0","Winning the final set"], ans:0}
+];
+
+var T = { questions:[], current:0, earned:0, answered:false };
+
+function shuffleArr(arr) {
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; }
+  return a;
+}
+
+function startTrivia() {
+  if(G.coins < 500) return;
+  T.questions = shuffleArr(TRIVIA_Q).slice(0,5);
+  T.current = 0; T.earned = 0;
+  showTriviaQ();
+  show('trivia');
+}
+
+function showTriviaQ() {
+  var q = T.questions[T.current];
+  T.answered = false;
+  document.getElementById('triviaProgress').textContent = 'QUESTION '+(T.current+1)+' / 5';
+  document.getElementById('triviaCoinDisp').textContent = '🪙 '+G.coins;
+  document.getElementById('triviaQuestion').textContent = q.q;
+  document.getElementById('triviaFeedback').textContent = '';
+  document.getElementById('triviaFeedback').className = 'trivia-feedback';
+  document.getElementById('triviaNextBtn').classList.add('hidden');
+
+  var shuffled = shuffleArr(q.opts.map(function(o,i){ return {text:o,orig:i}; }));
+  var optsEl = document.getElementById('triviaOpts');
+  optsEl.innerHTML = '';
+  shuffled.forEach(function(opt) {
+    var btn = document.createElement('button');
+    btn.className = 'trivia-opt';
+    btn.textContent = opt.text;
+    (function(isCorrect, el, sh, ca){
+      el.onclick = function(){ answerTrivia(isCorrect, el, sh, ca); };
+    })(opt.orig === q.ans, btn, shuffled, q.ans);
+    optsEl.appendChild(btn);
+  });
+}
+
+function answerTrivia(correct, btn, shuffled, correctAns) {
+  if(T.answered) return;
+  T.answered = true;
+  document.querySelectorAll('.trivia-opt').forEach(function(b,i){
+    b.disabled = true;
+    if(shuffled[i].orig === correctAns) b.classList.add('correct');
+  });
+  var fb = document.getElementById('triviaFeedback');
+  if(correct) {
+    btn.classList.add('correct');
+    G.coins += 20; T.earned += 20;
+    fb.textContent = '✅ CORRECT! +20 coins';
+    fb.className = 'trivia-feedback good';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '❌ WRONG! The correct answer is highlighted.';
+    fb.className = 'trivia-feedback bad';
+  }
+  saveCoins();
+  document.getElementById('triviaCoinDisp').textContent = '🪙 '+G.coins;
+  var nxt = document.getElementById('triviaNextBtn');
+  nxt.classList.remove('hidden');
+  nxt.textContent = T.current < 4 ? 'NEXT →' : 'FINISH 🏆';
+}
+
+function nextTriviaQ() {
+  T.current++;
+  if(T.current >= 5) { openVault(); return; }
+  showTriviaQ();
+}
+
 // ===== INIT =====
 window.addEventListener('DOMContentLoaded', function(){
+  G.coins = loadCoins();
   buildSkinGrid();
   document.getElementById('nameInput').addEventListener('keydown', function(e){
     if(e.key==='Enter') startGame();
