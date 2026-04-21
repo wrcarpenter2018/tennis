@@ -81,23 +81,24 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
 .end-btn.vault{background:linear-gradient(135deg,#7b2ff7,#4a00b4)}
 
 /* VAULT */
-#vault{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 16px;background:radial-gradient(ellipse at top,#1a0b30,#0a0a1a);overflow-y:auto}
-.vault-inner{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;padding-top:16px}
-.vault-em{font-size:54px;margin-bottom:6px}
-.vault-title{font-size:26px;font-weight:900;background:linear-gradient(180deg,#FFD700,#FF8C00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
-.vault-coins-big{font-size:56px;font-weight:900;color:#FFD700;line-height:1}
-.vault-coins-lbl{font-size:11px;letter-spacing:3px;color:#666;text-transform:uppercase;margin-bottom:12px}
-.vault-bar-wrap{background:rgba(255,255,255,.08);border-radius:20px;height:10px;margin-bottom:4px;overflow:hidden;width:100%}
+#vault{background:radial-gradient(ellipse at top,#1a0b30,#0a0a1a)}
+.vault-inner{max-width:420px;margin:0 auto;padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.vault-em{font-size:44px}
+.vault-title{font-size:24px;font-weight:900;background:linear-gradient(180deg,#FFD700,#FF8C00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.vault-coins-row{display:flex;align-items:baseline;gap:8px}
+.vault-coins-big{font-size:52px;font-weight:900;color:#FFD700;line-height:1}
+.vault-coins-lbl{font-size:11px;letter-spacing:2px;color:#888;text-transform:uppercase}
+.vault-bar-wrap{background:rgba(255,255,255,.08);border-radius:20px;height:8px;overflow:hidden;width:100%}
 .vault-bar{height:100%;border-radius:20px;background:linear-gradient(90deg,#4caf50,#FFD700);transition:width .6s}
-.vault-bar-lbl{font-size:10px;color:#555;margin-bottom:14px;text-align:right;width:100%}
-.vault-section-lbl{font-size:10px;letter-spacing:2px;color:#555;text-transform:uppercase;margin-bottom:6px;align-self:flex-start}
-.unlock-list{width:100%;margin-bottom:14px}
-.trivia-unlock{background:rgba(76,175,80,.08);border:2px solid rgba(76,175,80,.3);border-radius:12px;padding:12px 14px;margin-bottom:14px;width:100%}
+.vault-bar-lbl{font-size:10px;color:#555;text-align:right;width:100%;margin-top:2px}
+.vault-section-lbl{font-size:10px;letter-spacing:2px;color:#555;text-transform:uppercase;align-self:flex-start}
+.unlock-list{width:100%}
+.trivia-unlock{background:rgba(76,175,80,.08);border:2px solid rgba(76,175,80,.3);border-radius:12px;padding:10px 14px;width:100%}
 .trivia-unlock.locked{border-color:rgba(255,100,0,.35);background:rgba(255,100,0,.06)}
-.trivia-unlock-title{font-size:13px;font-weight:900;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;color:#4caf50}
+.trivia-unlock-title{font-size:12px;font-weight:900;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;color:#4caf50}
 .trivia-unlock.locked .trivia-unlock-title{color:#ff6600}
 .trivia-unlock-sub{font-size:11px;color:#777}
-.vault-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;width:100%;padding-bottom:16px}
+.vault-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;width:100%;padding-bottom:20px}
 
 /* TRIVIA */
 #trivia{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:radial-gradient(ellipse at top,#0a1a2a,#0a0a1a)}
@@ -226,8 +227,10 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
   <div class="vault-inner">
     <div class="vault-em">🏦</div>
     <div class="vault-title">YOUR VAULT</div>
-    <div class="vault-coins-big" id="vaultCoins">100</div>
-    <div class="vault-coins-lbl">🪙 Coins</div>
+    <div class="vault-coins-row">
+      <div class="vault-coins-big" id="vaultCoins">100</div>
+      <div class="vault-coins-lbl">🪙 coins</div>
+    </div>
     <div class="vault-bar-wrap"><div class="vault-bar" id="vaultBar" style="width:10%"></div></div>
     <div class="vault-bar-lbl" id="vaultBarLbl">100 / 1000</div>
     <div class="vault-section-lbl">Legend Unlocks</div>
@@ -862,7 +865,7 @@ function openVault() {
   ul.innerHTML = '';
   SKINS.filter(function(s){ return s.unlock > 0; }).forEach(function(s){
     var done = G.coins >= s.unlock;
-    ul.innerHTML += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06)">'
+    ul.innerHTML += '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06)">'
       +'<span style="font-size:18px">'+(done ? s.e : '🔒')+'</span>'
       +'<span style="font-size:12px;font-weight:900;color:'+(done?'#4caf50':'#888')+'">'+s.n+'</span>'
       +'<span style="font-size:10px;color:#555;margin-left:auto">'+s.unlock+' 🪙 '+(done?'✓ UNLOCKED':'')+'</span>'
