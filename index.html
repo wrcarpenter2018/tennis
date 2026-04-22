@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Legends Face Off</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-height:100vh}
@@ -29,6 +30,9 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
 #startBtn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(76,175,80,.4)}
 .rules{margin-top:8px;background:rgba(0,0,0,.3);border-radius:8px;padding:7px;font-size:10px;color:#888;line-height:1.8;text-align:center}
 .rules b{color:#4caf50}
+#qrBadge{position:fixed;bottom:8px;right:8px;background:rgba(0,0,0,.7);border:1px solid #4caf50;border-radius:6px;padding:4px;z-index:50;display:none}
+#qrBadge canvas,#qrBadge img{display:block;border-radius:3px}
+#qrBadge span{display:block;font-size:7px;color:#4caf50;text-align:center;margin-top:2px;letter-spacing:1px}
 
 /* GAME */
 #game{min-height:100vh;display:flex;flex-direction:column;align-items:center;background:#1a0b30;padding:12px}
@@ -134,6 +138,9 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
 </style>
 </head>
 <body>
+
+<!-- QR BADGE (fixed corner) -->
+<div id="qrBadge"><div id="qrcode"></div><span>SCAN TO PLAY</span></div>
 
 <!-- WELCOME -->
 <div id="welcome">
@@ -1078,6 +1085,15 @@ window.addEventListener('DOMContentLoaded', function(){
   document.getElementById('nameInput').addEventListener('keydown', function(e){
     if(e.key==='Enter') startGame();
   });
+  try {
+    new QRCode(document.getElementById('qrcode'),{
+      text:'https://wrcarpenter2018.github.io/coins',
+      width:56, height:56,
+      colorDark:'#4caf50', colorLight:'#000000',
+      correctLevel:QRCode.CorrectLevel.M
+    });
+    document.getElementById('qrBadge').style.display = 'block';
+  } catch(e){}
 });
 </script>
 </body>
