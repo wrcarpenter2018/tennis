@@ -29,9 +29,6 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
 #startBtn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(76,175,80,.4)}
 .rules{margin-top:8px;background:rgba(0,0,0,.3);border-radius:8px;padding:7px;font-size:10px;color:#888;line-height:1.8;text-align:center}
 .rules b{color:#4caf50}
-#qrBadge{position:fixed;top:8px;right:8px;background:rgba(0,0,0,.7);border:1px solid #4caf50;border-radius:6px;padding:4px;z-index:50;display:none}
-#qrBadge canvas,#qrBadge img{display:block;border-radius:3px}
-#qrBadge span{display:block;font-size:7px;color:#4caf50;text-align:center;margin-top:2px;letter-spacing:1px}
 
 /* GAME */
 #game{min-height:100vh;display:flex;flex-direction:column;align-items:center;background:#1a0b30;padding:12px}
@@ -138,14 +135,15 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
 </head>
 <body>
 
-<!-- QR BADGE (fixed corner) -->
-<div id="qrBadge"><img src="https://quickchart.io/qr?text=https://wrcarpenter2018.github.io/tennis&size=56&dark=4caf50&light=000000" width="56" height="56" style="border-radius:3px;display:block"><span>SCAN TO PLAY</span></div>
-
 <!-- WELCOME -->
 <div id="welcome">
   <div class="logo-em">🎾</div>
   <div class="logo-title">LEGENDS FACE OFF</div>
   <div class="logo-sub">Play to Win</div>
+  <div style="text-align:center;margin-bottom:8px">
+    <img src="https://quickchart.io/qr?text=https://wrcarpenter2018.github.io/tennis&size=70&dark=4caf50&light=0a0a1a" width="70" height="70" style="border-radius:6px;border:2px solid #4caf50">
+    <div style="font-size:9px;color:#4caf50;letter-spacing:2px;margin-top:3px">SCAN TO PLAY</div>
+  </div>
   <div class="box">
     <div class="welcome-coins" id="welcomeCoins">🪙 100 coins</div>
     <div class="lbl">Your Name</div>
@@ -1086,7 +1084,6 @@ window.addEventListener('DOMContentLoaded', function(){
   document.getElementById('nameInput').addEventListener('keydown', function(e){
     if(e.key==='Enter') startGame();
   });
-  document.getElementById('qrBadge').style.display = 'block';
 });
 </script>
 </body>
