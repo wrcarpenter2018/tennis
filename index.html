@@ -1079,8 +1079,12 @@ function openSlams() {
       + '<div class="slam-surface" style="background:' + s.surfaceColor + '22;color:' + s.surfaceColor + ';border:1px solid ' + s.surfaceColor + '">' + s.surface + '</div>'
       + '<div class="slam-claim" style="color:' + (CLAIMED_SLAMS[s.key] ? '#FFD700' : '#fff') + '">' + (CLAIMED_SLAMS[s.key] ? '🏆 CLAIMED!' : 'TAP TO CLAIM') + '</div>';
     card.addEventListener('click', function() {
-      CLAIMED_SLAMS[s.key] = true;
-      saveSlams();
+      if(!CLAIMED_SLAMS[s.key]) {
+        CLAIMED_SLAMS[s.key] = true;
+        G.coins += 20;
+        saveCoins();
+        saveSlams();
+      }
       openSlams();
     });
     grid.appendChild(card);
