@@ -165,11 +165,23 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
     <div class="lbl">Your Name</div>
     <input type="text" id="nameInput" placeholder="Enter your name..." maxlength="16" />
     <div class="lbl">Choose Your Tournament</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:5px" id="slamPicker">
+    <div style="font-size:7px;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px">⬛ GRAND SLAMS</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:4px" id="slamPicker">
       <button class="slam-pick sel-slam" data-slam="wb"  onclick="selectSlam('wb')"  style="background:linear-gradient(135deg,#1b5e20,#33691e);border:2px solid #4caf50;border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🌿<br>Wimbledon</button>
       <button class="slam-pick" data-slam="ao"  onclick="selectSlam('ao')"  style="background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🔵<br>Aus Open</button>
       <button class="slam-pick" data-slam="rg"  onclick="selectSlam('rg')"  style="background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🧱<br>Roland Garros</button>
       <button class="slam-pick" data-slam="uso" onclick="selectSlam('uso')" style="background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🌙<br>US Open</button>
+    </div>
+    <div style="font-size:7px;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px">🎖️ MASTERS 1000</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:5px" id="mastersPicker">
+      <button class="slam-pick" data-slam="iw"   onclick="selectSlam('iw')"   style="background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🌴<br>Indian Wells</button>
+      <button class="slam-pick" data-slam="mia"  onclick="selectSlam('mia')"  style="background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🌊<br>Miami</button>
+      <button class="slam-pick" data-slam="mc"   onclick="selectSlam('mc')"   style="background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🎰<br>Monte Carlo</button>
+      <button class="slam-pick" data-slam="mad"  onclick="selectSlam('mad')"  style="background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🇪🇸<br>Madrid</button>
+      <button class="slam-pick" data-slam="rom"  onclick="selectSlam('rom')"  style="background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🏛️<br>Rome</button>
+      <button class="slam-pick" data-slam="cin"  onclick="selectSlam('cin')"  style="background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🏙️<br>Cincinnati</button>
+      <button class="slam-pick" data-slam="sha"  onclick="selectSlam('sha')"  style="background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🐉<br>Shanghai</button>
+      <button class="slam-pick" data-slam="par"  onclick="selectSlam('par')"  style="background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 2px;cursor:pointer;font-size:10px;color:#fff;font-weight:900;font-family:inherit">🗼<br>Paris</button>
     </div>
     <div class="lbl">Choose Your Round</div>
     <div style="display:flex;gap:3px;margin-bottom:5px;overflow-x:auto;padding-bottom:2px" id="roundPicker"></div>
@@ -626,16 +638,25 @@ function selectRound(key) {
 }
 
 var SLAM_THEMES = {
-  wb:  {surround:'#2d1b5e', stripe1:'#2d7a2d', stripe2:'#348534', label:'WIMBLEDON',  lineColor:'rgba(255,255,255,0.85)'},
-  ao:  {surround:'#0a1a3a', stripe1:'#1565c0', stripe2:'#1976d2', label:'AUSTRALIAN OPEN', lineColor:'rgba(255,255,255,0.9)'},
+  wb:  {surround:'#2d1b5e', stripe1:'#2d7a2d', stripe2:'#348534', label:'WIMBLEDON',     lineColor:'rgba(255,255,255,0.85)'},
+  ao:  {surround:'#0a1a3a', stripe1:'#1565c0', stripe2:'#1976d2', label:'AUSTRALIAN OPEN',lineColor:'rgba(255,255,255,0.9)'},
   rg:  {surround:'#3a1a0a', stripe1:'#c2440f', stripe2:'#d4521a', label:'ROLAND GARROS', lineColor:'rgba(255,255,230,0.9)'},
-  uso: {surround:'#0a0a2a', stripe1:'#1a237e', stripe2:'#283593', label:'US OPEN',     lineColor:'rgba(255,255,255,0.9)'}
+  uso: {surround:'#0a0a2a', stripe1:'#1a237e', stripe2:'#283593', label:'US OPEN',        lineColor:'rgba(255,255,255,0.9)'},
+  iw:  {surround:'#0a1f0a', stripe1:'#1976d2', stripe2:'#1e88e5', label:'INDIAN WELLS',   lineColor:'rgba(255,255,255,0.9)'},
+  mia: {surround:'#001a2a', stripe1:'#0277bd', stripe2:'#0288d1', label:'MIAMI OPEN',     lineColor:'rgba(255,255,255,0.9)'},
+  mc:  {surround:'#1a0a00', stripe1:'#bf360c', stripe2:'#d84315', label:'MONTE CARLO',    lineColor:'rgba(255,255,230,0.9)'},
+  mad: {surround:'#1a0a0a', stripe1:'#b71c1c', stripe2:'#c62828', label:'MADRID OPEN',    lineColor:'rgba(255,255,230,0.9)'},
+  rom: {surround:'#2a1500', stripe1:'#a0522d', stripe2:'#bf6020', label:'ROME',            lineColor:'rgba(255,255,230,0.9)'},
+  cin: {surround:'#0a1020', stripe1:'#283593', stripe2:'#303f9f', label:'CINCINNATI',      lineColor:'rgba(255,255,255,0.9)'},
+  sha: {surround:'#0a0a1a', stripe1:'#1a237e', stripe2:'#1565c0', label:'SHANGHAI',        lineColor:'rgba(255,255,255,0.9)'},
+  par: {surround:'#100010', stripe1:'#4a148c', stripe2:'#6a1fa0', label:'PARIS MASTERS',   lineColor:'rgba(255,255,255,0.9)'}
 };
 
 function selectSlam(key) {
   G.selectedSlam = key;
   document.querySelectorAll('.slam-pick').forEach(function(b){
     var theme = SLAM_THEMES[b.dataset.slam];
+    if(!theme) return;
     if(b.dataset.slam === key) {
       b.style.background = 'linear-gradient(135deg,' + theme.stripe1 + ',' + theme.stripe2 + ')';
       b.style.borderColor = '#FFD700';
