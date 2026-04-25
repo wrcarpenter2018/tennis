@@ -864,6 +864,7 @@ function endMatch(playerWon) {
   document.getElementById('coinDisplay').textContent = G.coins;
   setTimeout(function(){
     var grandWin = G.coins >= 1000;
+    if(grandWin){ G.coins = 100; G.selectedRound = 'r1'; saveCoins(); var rs=document.getElementById('roundSelect'); if(rs) rs.value='r1'; }
     var brokeOut = G.coins <= 0;
     var mysteryWin = G.mysteryBattle && playerWon;
     var finalWin = playerWon && G.selectedRound === 'f';
@@ -893,7 +894,7 @@ function endMatch(playerWon) {
     t.className = 'end-title '+(grandWin||playerWon?'win':'lose');
     if(grandWin){
       t.textContent = 'CHAMPION!';
-      document.getElementById('endSub').textContent = '🎉 You reached 1000 coins! You are the ultimate Coin Tennis Champion!';
+      document.getElementById('endSub').textContent = '🎉 1000 coins! Champion! Coins reset to 100 — keep going!';
     } else if(brokeOut){
       t.textContent = 'BROKE!';
       document.getElementById('endSub').textContent = 'You ran out of coins! Better luck next time.';
@@ -909,7 +910,7 @@ function endMatch(playerWon) {
     }
     document.getElementById('endCoins').textContent = G.coins;
     var btns = document.querySelector('.end-btns');
-    btns.innerHTML = grandWin || brokeOut
+    btns.innerHTML = brokeOut
       ? '<button class="end-btn again" onclick="location.reload()">🔄 NEW GAME</button>'
       : '<button class="end-btn again" onclick="startMatch()">🎾 NEXT MATCH</button><button class="end-btn vault" onclick="openVault()">🏦 VAULT</button><button class="end-btn" onclick="show(\'welcome\')">🏠 MENU</button>';
     show('end');
