@@ -158,7 +158,7 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
   <div class="logo-sub">Play to Win</div>
   <div class="box">
     <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px">
-      <canvas id="qrCanvas" width="80" height="80" style="border-radius:4px;border:2px solid #4caf50;background:#fff"></canvas>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://wrcarpenter2018.github.io" width="80" height="80" style="border-radius:4px;border:2px solid #4caf50;background:#fff" />
       <div style="font-size:8px;color:#4caf50;letter-spacing:2px">SCAN TO PLAY</div>
     </div>
     <div class="welcome-coins" id="welcomeCoins">🪙 100 coins</div>
@@ -1425,7 +1425,6 @@ window.addEventListener('DOMContentLoaded', function(){
   G.playerSkin = SKINS[0];
   buildSkinGrid();
   buildRoundPicker();
-  drawQR('qrCanvas', 'https://wrcarpenter2018.github.io');
   document.getElementById('nameInput').addEventListener('keydown', function(e){
     if(e.key==='Enter') startGame();
   });
