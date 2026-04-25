@@ -1402,7 +1402,7 @@ function drawQR(canvasId, text) {
     ctx2.font = '6px Arial';
     ctx2.textAlign = 'center';
     ctx2.fillText('wrcarpenter2018', c.width/2, 35);
-    ctx2.fillText('.github.io/tennis', c.width/2, 46);
+    ctx2.fillText('wrcarpenter2018.github.io', c.width/2, 46);
   };
   img.src = 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=' + encodeURIComponent(text) + '&choe=UTF-8';
 }
@@ -1417,7 +1417,7 @@ window.addEventListener('DOMContentLoaded', function(){
   G.playerSkin = SKINS[0];
   buildSkinGrid();
   buildRoundPicker();
-  drawQR('qrCanvas', 'https://wrcarpenter2018.github.io/tennis');
+  drawQR('qrCanvas', 'https://wrcarpenter2018.github.io');
   document.getElementById('nameInput').addEventListener('keydown', function(e){
     if(e.key==='Enter') startGame();
   });
