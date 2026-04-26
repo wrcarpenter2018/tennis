@@ -991,125 +991,126 @@ function draw() {
 
 function drawPlayer(x, y, w, h, skin, facingRight) {
   var cx = x + w/2;
-  var dir = facingRight ? -1 : 1; // body offset direction
-  var bx = cx + dir * 26; // body center x
+  var dir = facingRight ? -1 : 1;
+  var bx = cx + dir * 26;
+  var skinTone = '#d4956a';
+  var skinDark  = '#a0632e';
+  var skinLight = '#f0c090';
 
-  // === SHADOW ===
-  ctx.fillStyle = 'rgba(0,0,0,0.18)';
+  // === GROUND SHADOW ===
+  ctx.fillStyle = 'rgba(0,0,0,0.22)';
   ctx.beginPath();
-  ctx.ellipse(bx, y + h - 2, 14, 5, 0, 0, Math.PI*2);
+  ctx.ellipse(bx, y+h-1, 16, 5, 0, 0, Math.PI*2);
   ctx.fill();
+
+  // helper: cylinder segment (3D limb)
+  function cylinder(x1,y1,x2,y2,r,col){
+    var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy);
+    var nx=-dy/len,ny=dx/len;
+    var lg=ctx.createLinearGradient(x1+nx*r,y1+ny*r,x1-nx*r,y1-ny*r);
+    lg.addColorStop(0,'rgba(255,255,255,0.25)');
+    lg.addColorStop(0.35,col);
+    lg.addColorStop(1,'rgba(0,0,0,0.45)');
+    ctx.strokeStyle=lg; ctx.lineWidth=r*2; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  }
 
   // === LEGS ===
-  var hipY = y + h * 0.62;
-  var footY = y + h - 4;
-  ctx.strokeStyle = '#2a2a2a';
-  ctx.lineWidth = 5;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(bx, hipY);
-  ctx.lineTo(bx - 6, footY);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(bx, hipY);
-  ctx.lineTo(bx + 6, footY);
-  ctx.stroke();
-  // Shoes
-  ctx.fillStyle = '#222';
-  ctx.beginPath(); ctx.ellipse(bx - 6, footY, 6, 3, 0, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.ellipse(bx + 6, footY, 6, 3, 0, 0, Math.PI*2); ctx.fill();
+  var hipY  = y + h * 0.60;
+  var footY = y + h - 5;
+  var lx = bx - 6, rx = bx + 6;
+  cylinder(bx, hipY, lx, footY, 4, '#1a1a2e');
+  cylinder(bx, hipY, rx, footY, 4, '#1a1a2e');
+  // 3D shoes
+  var sg;
+  sg = ctx.createRadialGradient(lx-2,footY-1,1,lx,footY,7);
+  sg.addColorStop(0,'#555'); sg.addColorStop(1,'#111');
+  ctx.fillStyle=sg; ctx.beginPath(); ctx.ellipse(lx,footY,7,3.5,0,0,Math.PI*2); ctx.fill();
+  sg = ctx.createRadialGradient(rx-2,footY-1,1,rx,footY,7);
+  sg.addColorStop(0,'#555'); sg.addColorStop(1,'#111');
+  ctx.fillStyle=sg; ctx.beginPath(); ctx.ellipse(rx,footY,7,3.5,0,0,Math.PI*2); ctx.fill();
 
   // === TORSO ===
-  var torsoTop = y + h * 0.30;
-  var torsoH = hipY - torsoTop;
-  ctx.fillStyle = skin.frame;
-  ctx.beginPath();
-  ctx.roundRect(bx - 9, torsoTop, 18, torsoH, 4);
-  ctx.fill();
+  var torsoTop = y + h * 0.29;
+  var torsoH   = hipY - torsoTop;
+  var torsoW   = 18;
+  var tg = ctx.createLinearGradient(bx-torsoW/2,0,bx+torsoW/2,0);
+  tg.addColorStop(0,'rgba(0,0,0,0.35)');
+  tg.addColorStop(0.2, skin.frame);
+  tg.addColorStop(0.6, skin.frame);
+  tg.addColorStop(1,'rgba(255,255,255,0.18)');
+  ctx.fillStyle=tg;
+  ctx.beginPath(); ctx.roundRect(bx-torsoW/2, torsoTop, torsoW, torsoH, 5); ctx.fill();
   // Shirt stripe
-  ctx.fillStyle = skin.grip;
-  ctx.beginPath();
-  ctx.roundRect(bx - 3, torsoTop, 6, torsoH, 2);
-  ctx.fill();
+  var sg2 = ctx.createLinearGradient(bx-4,0,bx+4,0);
+  sg2.addColorStop(0, skin.grip); sg2.addColorStop(0.5,'rgba(255,255,255,0.3)'); sg2.addColorStop(1, skin.grip);
+  ctx.fillStyle=sg2;
+  ctx.beginPath(); ctx.roundRect(bx-4, torsoTop+2, 8, torsoH-4, 3); ctx.fill();
+  // Torso highlight
+  ctx.fillStyle='rgba(255,255,255,0.12)';
+  ctx.beginPath(); ctx.roundRect(bx-torsoW/2+2, torsoTop+2, 6, torsoH*0.6, 3); ctx.fill();
 
-  // === ARM (toward racket) ===
-  var shoulderX = facingRight ? bx + 9 : bx - 9;
-  var gripY = y + h * 0.55;
-  ctx.strokeStyle = '#c8a07a';
-  ctx.lineWidth = 5;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(shoulderX, torsoTop + 6);
-  ctx.quadraticCurveTo(cx + dir*8, torsoTop + 14, cx, gripY);
-  ctx.stroke();
+  // === ARM ===
+  var shoulderX = facingRight ? bx+9 : bx-9;
+  var gripY = y + h * 0.52;
+  cylinder(shoulderX, torsoTop+5, cx, gripY, 3.5, skinTone);
 
-  // === RACKET GRIP ===
-  var gripH = h * 0.22;
-  ctx.fillStyle = skin.grip;
-  ctx.beginPath();
-  ctx.roundRect(cx - 3, gripY, 6, gripH, 2);
-  ctx.fill();
+  // === RACKET GRIP (3D handle) ===
+  var gripH = h * 0.20;
+  var rg = ctx.createLinearGradient(cx-4,0,cx+4,0);
+  rg.addColorStop(0,'rgba(0,0,0,0.4)'); rg.addColorStop(0.4,skin.grip); rg.addColorStop(1,'rgba(255,255,255,0.2)');
+  ctx.fillStyle=rg;
+  ctx.beginPath(); ctx.roundRect(cx-3.5, gripY, 7, gripH, 2); ctx.fill();
 
-  // === RACKET HEAD ===
-  var headW = 22;
-  var headH = h * 0.46;
-  var headY = y + 2;
-  var headCY = headY + headH/2;
-  ctx.strokeStyle = skin.frame;
-  ctx.lineWidth = 4;
-  ctx.shadowColor = skin.frame;
-  ctx.shadowBlur = 12;
-  ctx.beginPath();
-  ctx.ellipse(cx, headY + headH/2, headW, headH/2, 0, 0, Math.PI*2);
-  ctx.stroke();
-  ctx.shadowBlur = 0;
-
-  // Strings horizontal
-  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-  ctx.lineWidth = 1;
-  for(var i=1;i<6;i++){
-    var sy = headY + (headH/6)*i;
-    var t = (sy - headCY)/(headH/2);
-    var hw = headW * Math.sqrt(Math.max(0, 1 - t*t)) * 0.85;
-    ctx.beginPath(); ctx.moveTo(cx-hw, sy); ctx.lineTo(cx+hw, sy); ctx.stroke();
+  // === RACKET HEAD (3D frame) ===
+  var rHW = 22, rHH = h*0.44, rHY = y+2;
+  ctx.shadowColor=skin.frame; ctx.shadowBlur=14;
+  ctx.strokeStyle=skin.frame; ctx.lineWidth=5;
+  ctx.beginPath(); ctx.ellipse(cx, rHY+rHH/2, rHW, rHH/2, 0, 0, Math.PI*2); ctx.stroke();
+  ctx.shadowBlur=0;
+  // Inner highlight ring
+  ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.ellipse(cx, rHY+rHH/2, rHW-4, rHH/2-3, 0, 0, Math.PI*2); ctx.stroke();
+  // Strings
+  var rHCY = rHY+rHH/2;
+  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=1;
+  for(var i=1;i<7;i++){
+    var sy=rHY+(rHH/7)*i, t=(sy-rHCY)/(rHH/2);
+    var hw=rHW*Math.sqrt(Math.max(0,1-t*t))*0.88;
+    ctx.beginPath(); ctx.moveTo(cx-hw,sy); ctx.lineTo(cx+hw,sy); ctx.stroke();
   }
-  ctx.beginPath(); ctx.moveTo(cx, headY+4); ctx.lineTo(cx, headY+headH-4); ctx.stroke();
+  for(var j=-2;j<=2;j++){
+    ctx.beginPath(); ctx.moveTo(cx+j*8, rHY+4); ctx.lineTo(cx+j*8, rHY+rHH-4); ctx.stroke();
+  }
 
-  // === HEAD ===
-  var headR = 10;
-  var headCX = bx;
-  var headTopY = y + h * 0.12;
+  // === HEAD (3D sphere) ===
+  var hR=11, hCY=y+h*0.14+hR;
   // Neck
-  ctx.fillStyle = '#c8a07a';
-  ctx.fillRect(bx - 3, headTopY + headR, 6, torsoTop - headTopY - headR);
-  // Head circle
-  ctx.fillStyle = '#c8a07a';
-  ctx.beginPath();
-  ctx.arc(headCX, headTopY + headR, headR, 0, Math.PI*2);
-  ctx.fill();
+  var nk=ctx.createLinearGradient(bx-3,0,bx+3,0);
+  nk.addColorStop(0,skinDark); nk.addColorStop(0.5,skinTone); nk.addColorStop(1,skinLight);
+  ctx.fillStyle=nk; ctx.fillRect(bx-3, hCY+hR-1, 6, torsoTop-hCY-hR+3);
+  // Head sphere
+  var hg=ctx.createRadialGradient(bx-3,hCY-4,2,bx,hCY,hR);
+  hg.addColorStop(0,skinLight); hg.addColorStop(0.6,skinTone); hg.addColorStop(1,skinDark);
+  ctx.fillStyle=hg; ctx.beginPath(); ctx.arc(bx,hCY,hR,0,Math.PI*2); ctx.fill();
   // Hair
-  ctx.fillStyle = skin.grip;
-  ctx.beginPath();
-  ctx.arc(headCX, headTopY + headR, headR, Math.PI, 0);
-  ctx.fill();
+  var hairG=ctx.createRadialGradient(bx,hCY-hR,1,bx,hCY,hR);
+  hairG.addColorStop(0,skin.grip); hairG.addColorStop(1,'rgba(0,0,0,0.6)');
+  ctx.fillStyle=hairG;
+  ctx.beginPath(); ctx.arc(bx,hCY,hR,Math.PI+0.2,-0.2); ctx.lineTo(bx,hCY); ctx.fill();
   // Eyes
-  ctx.fillStyle = '#fff';
-  var eyeDir = facingRight ? 3 : -3;
-  ctx.beginPath(); ctx.arc(headCX + eyeDir, headTopY + headR, 2, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#222';
-  ctx.beginPath(); ctx.arc(headCX + eyeDir + (facingRight?0.5:-0.5), headTopY + headR, 1, 0, Math.PI*2); ctx.fill();
+  var ex = facingRight ? bx+3 : bx-3;
+  ctx.fillStyle='#fff'; ctx.beginPath(); ctx.ellipse(ex,hCY+1,2.5,2,0,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#1a1a2e'; ctx.beginPath(); ctx.arc(ex+(facingRight?0.8:-0.8),hCY+1,1.2,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.beginPath(); ctx.arc(ex+(facingRight?1.2:-0.4),hCY,0.5,0,Math.PI*2); ctx.fill();
 
-  // Abbr label
-  ctx.fillStyle = 'rgba(0,0,0,0.7)';
-  ctx.beginPath();
-  ctx.roundRect(bx - 11, y + h * 0.38, 22, 12, 3);
-  ctx.fill();
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 8px Arial Black, Arial';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(skin.abbr, bx, y + h * 0.44);
-  ctx.textBaseline = 'alphabetic';
+  // === NAME TAG ===
+  ctx.fillStyle='rgba(0,0,0,0.65)';
+  ctx.beginPath(); ctx.roundRect(bx-12,y+h*0.37,24,13,3); ctx.fill();
+  ctx.fillStyle='#fff'; ctx.font='bold 8px Arial Black,Arial';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(skin.abbr, bx, y+h*0.435);
+  ctx.textBaseline='alphabetic';
 }
 
 function roundRect(x,y,w,h,r){
