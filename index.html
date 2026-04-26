@@ -181,6 +181,7 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
         <option value="cin">🏙️ Cincinnati</option>
         <option value="sha">🐉 Shanghai</option>
         <option value="par">🗼 Paris Masters</option>
+        <option value="can">🍁 Canada Open</option>
       </optgroup>
     </select>
     <div class="lbl">Choose Your Round</div>
@@ -648,7 +649,8 @@ var SLAM_THEMES = {
   rom: {surround:'#2a1500', stripe1:'#a0522d', stripe2:'#bf6020', label:'ROME',            lineColor:'rgba(255,255,230,0.9)'},
   cin: {surround:'#0a1020', stripe1:'#283593', stripe2:'#303f9f', label:'CINCINNATI',      lineColor:'rgba(255,255,255,0.9)'},
   sha: {surround:'#0a0a1a', stripe1:'#1a237e', stripe2:'#1565c0', label:'SHANGHAI',        lineColor:'rgba(255,255,255,0.9)'},
-  par: {surround:'#100010', stripe1:'#4a148c', stripe2:'#6a1fa0', label:'PARIS MASTERS',   lineColor:'rgba(255,255,255,0.9)'}
+  par: {surround:'#100010', stripe1:'#4a148c', stripe2:'#6a1fa0', label:'PARIS MASTERS',   lineColor:'rgba(255,255,255,0.9)'},
+  can: {surround:'#0a1a2a', stripe1:'#d40000', stripe2:'#b00000', label:'CANADA OPEN',     lineColor:'rgba(255,255,255,0.9)'}
 };
 
 function selectSlam(key) {
@@ -1199,7 +1201,7 @@ function openVault() {
   btn.style.opacity = unlocked ? '1' : '0.4';
   var trophyRow = document.getElementById('vaultTrophyRow');
   trophyRow.innerHTML = '';
-  var ALL_TOURNEY_KEYS = ['wb','ao','rg','uso','iw','mia','mc','mad','rom','cin','sha','par'];
+  var ALL_TOURNEY_KEYS = ['wb','ao','rg','uso','iw','mia','mc','mad','rom','cin','sha','par','can'];
   ALL_TOURNEY_KEYS.forEach(function(key){
     var won = WON_TROPHIES[key];
     var lbl = SLAM_THEMES[key] ? SLAM_THEMES[key].label.replace('AUSTRALIAN OPEN','AO').replace('ROLAND GARROS','RG').replace('US OPEN','USO').replace('INDIAN WELLS','IW').replace('MIAMI OPEN','MIAMI').replace('MONTE CARLO','MC').replace('MADRID OPEN','MADRID').replace('CINCINNATI','CINCI').replace('SHANGHAI','SHA').replace('PARIS MASTERS','PARIS') : key.toUpperCase();
