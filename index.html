@@ -1682,6 +1682,8 @@ var BETTER_PLAYERS = [
 ];
 var BETTER_CATS = [
   {label:'Who has more Grand Slam titles?', key:'slams'},
+  {label:'Who has more career titles?',     key:'titles'},
+  {label:'Who has more career titles?',     key:'titles'},
   {label:'Who has more career titles?',     key:'titles'}
 ];
 var BT = {round:0, total:5, earned:0, cat:null, p1:null, p2:null, answered:false};
@@ -1704,15 +1706,26 @@ function nextBetterRound() {
   }
   BT.answered = false;
   BT.cat = BETTER_CATS[Math.floor(Math.random()*BETTER_CATS.length)];
-  var pool = shuffleArr(BETTER_PLAYERS.slice());
-  BT.p1 = pool[0]; BT.p2 = pool[1];
-  var tries = 0;
-  while(BT.p1[BT.cat.key] === BT.p2[BT.cat.key] && tries < 50) {
-    pool = shuffleArr(BETTER_PLAYERS.slice());
-    BT.p1 = pool[0]; BT.p2 = pool[1];
-    tries++;
+  var validPairs = [];
+  for(var a=0;a<BETTER_PLAYERS.length;a++){
+    for(var b=a+1;b<BETTER_PLAYERS.length;b++){
+      if(BETTER_PLAYERS[a][BT.cat.key] !== BETTER_PLAYERS[b][BT.cat.key]){
+        validPairs.push([a,b]);
+      }
+    }
   }
-  if(tries >= 50) { BT.cat = BETTER_CATS[1]; pool = shuffleArr(BETTER_PLAYERS.slice()); BT.p1=pool[0]; BT.p2=pool[1]; }
+  if(validPairs.length === 0){ BT.cat = BETTER_CATS[1]; }
+  validPairs = [];
+  for(var a2=0;a2<BETTER_PLAYERS.length;a2++){
+    for(var b2=a2+1;b2<BETTER_PLAYERS.length;b2++){
+      if(BETTER_PLAYERS[a2][BT.cat.key] !== BETTER_PLAYERS[b2][BT.cat.key]){
+        validPairs.push([a2,b2]);
+      }
+    }
+  }
+  var pair = validPairs[Math.floor(Math.random()*validPairs.length)];
+  BT.p1 = BETTER_PLAYERS[pair[0]]; BT.p2 = BETTER_PLAYERS[pair[1]];
+  if(Math.random()>0.5){var tmp=BT.p1;BT.p1=BT.p2;BT.p2=tmp;}
   document.getElementById('betterCategory').textContent = BT.cat.label;
   document.getElementById('betterScore').textContent = 'Round ' + (BT.round+1) + ' / ' + BT.total + '  |  Earned: ' + BT.earned + ' coins';
   document.getElementById('betterFeedback').textContent = '';
