@@ -374,6 +374,7 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
   </div>
   <div style="text-align:center;margin-top:6px">
     <div style="font-size:18px;font-weight:900;min-height:28px;letter-spacing:1px" id="wheelResult"></div>
+    <div id="countryInfo" style="max-width:340px;margin:6px auto 0;padding:8px 12px;background:rgba(255,255,255,0.05);border-radius:10px;font-size:11px;color:#ccc;line-height:1.5;display:none;text-align:left"></div>
     <button id="spinBtn" onclick="spinWheel()" style="margin-top:8px;padding:10px 32px;font-size:14px;font-family:inherit;font-weight:900;text-transform:uppercase;letter-spacing:2px;background:linear-gradient(135deg,#FFD700,#FF8C00);border:none;border-radius:10px;color:#000;cursor:pointer">🎰 SPIN!</button>
   </div>
   <div style="padding:10px 14px 4px">
@@ -1579,6 +1580,24 @@ var WHEEL_COUNTRIES = [
 ];
 var WHEEL_COLORS = ['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#34495e',
                     '#c0392b','#2980b9','#27ae60','#d35400','#8e44ad','#16a085','#f1c40f','#7f8c8d'];
+var COUNTRY_INFO = {
+  'Spain':        {stars:'Nadal, Alcaraz, Davidovich Fokina, Munar, Carballes Baena', fact:'Spain has won the Davis Cup 6 times. Rafael Nadal holds the record for most Roland Garros titles (14).'},
+  'Serbia':       {stars:'Djokovic, Kecmanovic, Lajovic, Djere', fact:'Novak Djokovic holds the all-time record of 24 Grand Slam titles, more than any player in history.'},
+  'Switzerland':  {stars:'Federer, Wawrinka, Huesler', fact:'Switzerland has produced two of tennis\'s greatest: Federer (20 slams) and Wawrinka (3 slams).'},
+  'Italy':        {stars:'Sinner, Musetti, Berrettini, Arnaldi, Cobolli, Darderi', fact:'Italy\'s golden generation is thriving — Sinner became world No.1 in 2024, and Berrettini reached Wimbledon final in 2021.'},
+  'USA':          {stars:'Fritz, Shelton, Paul, Tiafoe, Giron, Korda', fact:'The USA leads all nations in Grand Slam titles. Legends like Agassi, Sampras, Connors and McEnroe defined eras of the sport.'},
+  'Germany':      {stars:'Zverev, Struff, Hanfmann, Altmaier', fact:'Germany\'s greatest champions include Boris Becker (6 slams) and Steffi Graf. Zverev is the current flag-bearer.'},
+  'Russia':       {stars:'Medvedev, Rublev, Khachanov, Safiullin, Karatsev', fact:'Russia has produced a generation of elite players — Medvedev won the 2021 US Open and reached world No.1.'},
+  'France':       {stars:'Fils, Humbert, Mannarino, Moutet, Mpetshi Perricard, Gaston', fact:'France hosted the first Grand Slam — Roland Garros. The French "Four Musketeers" dominated the 1920s Davis Cup.'},
+  'Australia':    {stars:'De Minaur, Popyrin, Kokkinakis, Kubler, O\'Connell', fact:'Australia dominated tennis in the 1950s-70s with legends like Laver, Emerson and Newcombe. De Minaur leads today.'},
+  'Great Britain':{stars:'Draper, Norrie, Murray', fact:'Andy Murray won 3 Grand Slams and was the first British man to win Wimbledon since 1936. Jack Draper is the new star.'},
+  'Argentina':    {stars:'Cerundolo, Baez, Etcheverry, Navone, Coria, Comesana', fact:'Argentina\'s clay court culture has produced stars like Guillermo Vilas, Gaston Gaudio, and today\'s crop of young clay grinders.'},
+  'Japan':        {stars:'Nishikori, Nishioka, Daniel, Mochizuki', fact:'Kei Nishikori reached the 2014 US Open final, becoming the first Asian man in a Grand Slam final. Naomi Osaka won 4 slams on the women\'s side.'},
+  'Denmark':      {stars:'Rune, Loffhagen', fact:'Holger Rune burst onto the scene winning Paris Masters 2022 at age 19, becoming Denmark\'s biggest tennis star ever.'},
+  'Norway':       {stars:'Ruud, Tingström', fact:'Casper Ruud reached three Grand Slam finals (2022 RG, USO; 2023 RG) and is known as one of the best clay court players of his generation.'},
+  'Poland':       {stars:'Hurkacz, Majchrzak, Rola', fact:'Hubert Hurkacz won the 2021 Miami Open and reached the Wimbledon SF. He holds the record for the fastest serve in Wimbledon history.'},
+  'Greece':       {stars:'Tsitsipas', fact:'Stefanos Tsitsipas won the 2021 Roland Garros title and has been a consistent top-5 player. He\'s known for his one-handed backhand and social media presence.'}
+};
 var WHL = {spinning:false, rotation:0, raf:null};
 var COLLECTED_COUNTRIES = {};
 function saveCountries(){ try{localStorage.setItem('lfo_countries',JSON.stringify(COLLECTED_COUNTRIES));}catch(e){} }
@@ -1621,6 +1640,7 @@ function spinWheel() {
   document.getElementById('spinBtn').disabled = true;
   document.getElementById('wheelResult').textContent = '';
   document.getElementById('wheelCoinsEarned').textContent = '';
+  document.getElementById('countryInfo').style.display = 'none';
   var extraSpins = 5 + Math.random()*5;
   var extraDeg = Math.random()*360;
   var totalDeg = extraSpins*360 + extraDeg;
@@ -1649,6 +1669,10 @@ function spinWheel() {
       G.coins += 15; saveCoins();
       document.getElementById('wheelResult').textContent = landed.e + ' ' + landed.name + '!';
       document.getElementById('wheelCoinsEarned').textContent = '+15 coins earned!';
+      var info = COUNTRY_INFO[landed.name];
+      var infoEl = document.getElementById('countryInfo');
+      if(info){ infoEl.style.display='block'; infoEl.innerHTML='<div style="color:#FFD700;font-weight:900;margin-bottom:4px">⭐ Stars: '+info.stars+'</div><div>'+info.fact+'</div>'; }
+      else { infoEl.style.display='none'; }
       renderCollectedCountries();
     }
   }
