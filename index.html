@@ -214,6 +214,7 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
     <div class="lbl">Choose Your Skin</div>
     <div class="skin-grid" id="skinGrid"></div>
     <button id="startBtn" onclick="startGame()">🎾 PLAY TENNIS</button>
+    <button onclick="startPractice()" style="width:100%;margin-top:4px;padding:5px;font-size:11px;font-family:inherit;font-weight:900;text-transform:uppercase;letter-spacing:1px;background:linear-gradient(135deg,#00b4d8,#0077b6);border:none;border-radius:7px;color:#fff;cursor:pointer">🎯 PRACTICE MATCH — +20 coins</button>
     <button onclick="startMysteryBattle()" style="width:100%;margin-top:4px;padding:5px;font-size:11px;font-family:inherit;font-weight:900;text-transform:uppercase;letter-spacing:1px;background:linear-gradient(135deg,#b8006e,#6a0080);border:none;border-radius:7px;color:#fff;cursor:pointer">🎭 MYSTERY BATTLE</button>
     <button id="vaultBtn" onclick="openVault()" style="width:100%;margin-top:4px;padding:5px;font-size:11px;font-family:inherit;font-weight:900;text-transform:uppercase;letter-spacing:1px;background:linear-gradient(135deg,#7b2ff7,#4a00b4);border:none;border-radius:7px;color:#fff;cursor:pointer">🏦 MY VAULT</button>
   </div>
@@ -611,6 +612,7 @@ var G = {
   cpuMissing: false,
   cpuMissTarget: null,
   mysteryBattle: false,
+  practiceMode: false,
   mysterySkinIdx: -1,
   selectedSlam: 'wb',
   selectedRound: 'r1'
@@ -775,7 +777,23 @@ function startMysteryBattle() {
   startMatch();
 }
 
+function startPractice() {
+  G.practiceMode = true;
+  G.mysteryBattle = false;
+  var name = document.getElementById('nameInput').value.trim() || 'Player';
+  var skin = getSelectedSkin();
+  G.playerName = name;
+  G.playerSkin = skin;
+  document.getElementById('sbPlayerSkin').textContent = skin.e;
+  document.getElementById('sbPlayerName').textContent = skin.n;
+  document.getElementById('coinDisplay').textContent = G.coins;
+  show('game');
+  initCanvas();
+  startMatch();
+}
+
 function startGame() {
+  G.practiceMode = false;
   var name = document.getElementById('nameInput').value.trim() || 'Player';
   var skin = getSelectedSkin();
   G.playerName = name;
@@ -934,6 +952,26 @@ function scorePoint(who) {
 function endMatch(playerWon) {
   G.matchOver = true;
   cancelAnimationFrame(RAF); RAF = null;
+  if(G.practiceMode) {
+    if(playerWon){ G.coins += 20; setMsg('🎯 PRACTICE WIN! +20 coins!'); }
+    else { setMsg('🎯 PRACTICE LOSS — no penalty!'); }
+    saveCoins();
+    document.getElementById('coinDisplay').textContent = G.coins;
+    G.practiceMode = false;
+    setTimeout(function(){
+      document.getElementById('endEm').textContent = playerWon ? '🎯' : '😔';
+      var t = document.getElementById('endTitle');
+      t.className = 'end-title '+(playerWon?'win':'lose');
+      t.textContent = playerWon ? 'PRACTICE WIN!' : 'PRACTICE LOSS!';
+      document.getElementById('endSub').textContent = playerWon ? '+20 coins! Keep practicing!' : 'No coins lost — keep going!';
+      document.getElementById('endCoins').textContent = G.coins;
+      document.getElementById('endReveal').style.display='none';
+      document.getElementById('trophyReveal').style.display='none';
+      document.querySelector('.end-btns').innerHTML = '<button class="end-btn again" onclick="startPractice()">🎯 PRACTICE AGAIN</button><button class="end-btn" onclick="show(\'welcome\')">🏠 MENU</button>';
+      show('end');
+    }, 2000);
+    return;
+  }
   var rDef = ROUNDS[0];
   for(var ri=0;ri<ROUNDS.length;ri++) if(ROUNDS[ri].key===G.selectedRound){rDef=ROUNDS[ri];break;}
   if(playerWon){
