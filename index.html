@@ -239,6 +239,7 @@ body{font-family:Arial Black,Arial,sans-serif;background:#0a0a1a;color:#fff;min-
       <div class="sb-games">pts</div>
     </div>
     <div class="sb-mid">
+      <div id="practiceTag" style="display:none;font-size:9px;font-weight:900;color:#00b4d8;letter-spacing:1px;text-transform:uppercase">🎯 PRACTICE</div>
       <div class="sb-set" id="sbSet">GAME 1</div>
       <div class="sb-vs">VS</div>
       <div class="sb-games-row">
@@ -613,6 +614,7 @@ var G = {
   cpuMissTarget: null,
   mysteryBattle: false,
   isPractice: false,
+  maxGames: 3,
   mysterySkinIdx: -1,
   selectedSlam: 'wb',
   selectedRound: 'r1'
@@ -779,7 +781,9 @@ function startMysteryBattle() {
 
 function startPractice() {
   G.isPractice = true;
+  G.maxGames = 1;
   G.mysteryBattle = false;
+  document.getElementById('practiceTag').style.display = 'block';
   var name = document.getElementById('nameInput').value.trim() || 'Player';
   var skin = getSelectedSkin();
   G.playerName = name;
@@ -794,6 +798,7 @@ function startPractice() {
 
 function startGame() {
   G.isPractice = false;
+  G.maxGames = 3;
   var name = document.getElementById('nameInput').value.trim() || 'Player';
   var skin = getSelectedSkin();
   G.playerName = name;
@@ -933,14 +938,14 @@ function scorePoint(who) {
       G.playerGames++;
       G.playerPts = 0; G.cpuPts = 0;
       updateScoreboard();
-      if(G.playerGames >= (G.isPractice ? 1 : 3)) { endMatch(true); return; }
+      if(G.playerGames >= G.maxGames) { endMatch(true); return; }
       setMsg('YOU WIN GAME '+G.playerGames+'! 🏆');
       setTimeout(function(){ serveBall(1); }, 1600);
     } else if(G.cpuPts >= 5) {
       G.cpuGames++;
       G.playerPts = 0; G.cpuPts = 0;
       updateScoreboard();
-      if(G.cpuGames >= (G.isPractice ? 1 : 3)) { endMatch(false); return; }
+      if(G.cpuGames >= G.maxGames) { endMatch(false); return; }
       setMsg('CPU WINS GAME '+G.cpuGames+'! 🤖');
       setTimeout(function(){ serveBall(-1); }, 1600);
     } else {
@@ -958,6 +963,7 @@ function endMatch(playerWon) {
     saveCoins();
     document.getElementById('coinDisplay').textContent = G.coins;
     G.isPractice = false;
+    document.getElementById('practiceTag').style.display = 'none';
     setTimeout(function(){
       document.getElementById('endEm').textContent = playerWon ? '🎯' : '😔';
       var t = document.getElementById('endTitle');
